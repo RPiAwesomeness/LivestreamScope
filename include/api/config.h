@@ -12,7 +12,7 @@ struct Config {
     /*
      * The root of all API request URLs
      */
-    std::string apiroot { "https://api.twitch.tv/kraken/" };
+    std::string apiroot { "https://api.twitch.tv/kraken" };
 
     /*
      * The custom HTTP user agent string for this library

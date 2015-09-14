@@ -29,6 +29,8 @@ void Client::get(const net::Uri::Path &path, const net::Uri::QueryParameters &pa
     net::Uri uri = net::make_uri(config_->apiroot, path, parameters);
     configuration.uri = client->uri_to_string(uri);
 
+    std::cout << "client.cpp32 " << configuration.uri << std::endl;
+
     // Give out a user agent string
     configuration.header.add("User-Agent", config_->user_agent);
 
@@ -45,15 +47,24 @@ void Client::get(const net::Uri::Path &path, const net::Uri::QueryParameters &pa
         if (response.status != http::Status::ok) {
             throw domain_error(response.body);
         }
+
         // Parse the JSON from the response
         root = QJsonDocument::fromJson(response.body.c_str());
 
         // Open weather map API error code can either be a string or int
-        QVariant cod = root.toVariant().toMap()["cod"];
+        QVariant cod = root.toVariant().toMap()["status"];
+
+//        QVariantMap variant = root.toVariant().toMap();
+
+//        for (int i=0; i<variant["status"].toList().size(); i++){
+//            std::cout << "client.cpp60 " << variant["status"].toList()[i].toString().toStdString() << std::endl;
+//        }
+
         if ((cod.canConvert<QString>() && cod.toString() != "200")
                 || (cod.canConvert<unsigned int>() && cod.toUInt() != 200)) {
             throw domain_error(root.toVariant().toMap()["message"].toString().toStdString());
         }
+
     } catch (net::Error &) {
     }
 }
@@ -62,7 +73,8 @@ std::deque<std::string> Client::query_deps() {
     QJsonDocument root;
     std::deque<std::string> departments;
 
-    get( {"categories"}, {{"requireGuides", "true"}}, root);
+    std::cout << "client.cpp66" << std::endl;
+    get( { "categories"}, {{"requireGuides", "true"}}, root);
     // https://www.ifixit.com/api/2.0/categories?requireGuides=true
 
     QVariantMap returnMap = root.toVariant().toMap();
@@ -75,20 +87,26 @@ std::deque<std::string> Client::query_deps() {
 Client::Streams Client::query_streams(const string &query) {
     QJsonDocument root;
 
+    std::cout << "client.cpp87 " << query << std::endl;
+
     // Build a URI and get the contents
     // The fist parameter forms the path part of the URI.
     // The second parameter forms the CGI parameters.
     get( { "search", "streams" }, {{ "q", query }, {"limit", "10"}}, root);
-    // https://api.twitch.tv/kraken/search/streams/q=development&limit=10
+    std::cout << "client.cpp83 - get() complete" << std::endl;
+    // https://api.twitch.tv/kraken/search/streams/q=<query>&limit=10
 
     Streams result;
 
     QVariantMap variant = root.toVariant().toMap();
 
     // Iterate through the stream data
-    for (const QVariant &i : variant["list"].toList()) {
+    for (const QVariant &i : variant["channels"].toList()) {
+
         QVariantMap item = i.toMap();
         QVariantMap previews = item["preview"].toMap();
+
+        std::cout << "client.cpp108 " << std::endl;
 
         // Add a result to the weather list
         result.stream.emplace_back(

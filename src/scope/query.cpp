@@ -8,6 +8,7 @@
 #include <unity/scopes/CategoryRenderer.h>
 #include <unity/scopes/QueryBase.h>
 #include <unity/scopes/SearchReply.h>
+#include <unity/scopes/Department.h>
 
 #include <iomanip>
 #include <sstream>
@@ -37,7 +38,7 @@ const static string STREAM_TEMPLATE =
         },
         "components": {
         "title": "title",
-        "mascot" : "mascot",
+        "mascot" : "art",
         "subtitle": "subtitle"
         }
         }
@@ -55,6 +56,7 @@ void Query::cancelled() {
 
 void Query::run(sc::SearchReplyProxy const &reply) {
     try {
+
         // Start by getting information about the query
         const sc::CannedQuery &query(sc::SearchQueryBase::query());
 
@@ -67,17 +69,21 @@ void Query::run(sc::SearchReplyProxy const &reply) {
         // in the client.
 
         Client::Streams streams;
-        if (query_string.empty()) {
-            // If there is no search string, get the top streams for programming/development
+
+        if (!query.department_id().empty()) {
+            // If there is a department selected, use its id for the query string
+            streams = client_.query_streams("development");
+        } else if (query_string.empty()) {
+            // If there is no search string, get the streams for development
             streams = client_.query_streams("development");
         } else {
-            // otherwise, get the stream for the search string
+            // otherwise, get the forecast for the search string
             streams = client_.query_streams(query_string);
         }
 
         // Register a category for the forecast
         auto forecast_cat = reply->register_category("forecast",
-                                                     _(""), "", sc::CategoryRenderer(STREAM_TEMPLATE));
+                                                     "", "", sc::CategoryRenderer(STREAM_TEMPLATE));
 
         // For each of the forecast days
         for (const auto &stream : streams.stream) {
