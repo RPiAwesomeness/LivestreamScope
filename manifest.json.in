@@ -1,0 +1,15 @@
+{
+    "architecture": "@CLICK_ARCH@",
+    "description": "A simple Unity scope that accesses the network",
+    "framework": "ubuntu-sdk-15.04",
+    "hooks": {
+        "livestreaming": {
+            "apparmor": "livestreaming.apparmor",
+            "scope": "livestreaming"
+        }
+    },
+    "maintainer": "RPiAwesomeness <keyboardmailtesting@gmail.com>",
+    "name": "livestreamscope.rpiawesomeness",
+    "title": "livestreamscope",
+    "version": "0.1"
+}
