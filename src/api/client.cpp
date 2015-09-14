@@ -78,7 +78,7 @@ Client::Streams Client::query_streams(const string &query) {
     // Build a URI and get the contents
     // The fist parameter forms the path part of the URI.
     // The second parameter forms the CGI parameters.
-    get({"search", "streams"}, {{"q", &query}, {"limit", 10}}, root);
+    get( { "search", "streams" }, {{ "q", query }, {"limit", "10"}}, root);
     // https://api.twitch.tv/kraken/search/streams/q=development&limit=10
 
     Streams result;
@@ -98,7 +98,7 @@ Client::Streams Client::query_streams(const string &query) {
                              item["viewers"].toString().toStdString(),
                              item["url"].toString().toStdString(),
                              item["logo"].toString().toStdString(),
-                             previews["small"].toString().toStdString();
+                             previews["small"].toString().toStdString()
                     });
     }
 
