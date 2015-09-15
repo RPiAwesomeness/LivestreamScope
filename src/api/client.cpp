@@ -72,11 +72,12 @@ void Client::get(const net::Uri::Path &path, const net::Uri::QueryParameters &pa
 
 std::deque<std::string> Client::query_deps() {
     QJsonDocument root;
+    std::cout << "client.cpp75" << std::endl;
+
     std::deque<std::string> departments;
 
-    std::cout << "client.cpp66" << std::endl;
-    get( { "categories"}, {{"requireGuides", "true"}}, root);
-    // https://www.ifixit.com/api/2.0/categories?requireGuides=true
+    std::cout << "client.cpp79" << std::endl;
+    get( { "games", "top" }, { {"limit", "10"} }, root);
 
     QVariantMap returnMap = root.toVariant().toMap();
     for (QVariantMap::const_iterator iter = returnMap.begin(); iter != returnMap.end(); ++iter) {
@@ -88,13 +89,10 @@ std::deque<std::string> Client::query_deps() {
 Client::Streams Client::query_streams(const string &query) {
     QJsonDocument root;
 
-    std::cout << "client.cpp87 " << query << std::endl;
-
     // Build a URI and get the contents
     // The fist parameter forms the path part of the URI.
     // The second parameter forms the CGI parameters.
     get( { "search", "streams" }, {{ "q", query }, {"limit", "10"}}, root);
-    std::cout << "client.cpp83 - get() complete" << std::endl;
     // https://api.twitch.tv/kraken/search/streams/q=<query>&limit=10
 
     Streams result;

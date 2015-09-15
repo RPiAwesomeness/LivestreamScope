@@ -57,6 +57,16 @@ void Query::cancelled() {
 void Query::run(sc::SearchReplyProxy const &reply) {
     try {
 
+        sc::Department::SPtr all_depts = sc::Department::create("", query(), "All departments");
+        // Create new base department
+        std::cout << "query.cpp62" << std::endl;
+        for (const string &d : client_.query_deps()){
+            all_depts->add_subdepartment(sc::Department::create(d, query(), d));
+        }
+
+        // Register departments on the reply
+        reply->register_departments(all_depts);
+
         // Start by getting information about the query
         const sc::CannedQuery &query(sc::SearchQueryBase::query());
 
