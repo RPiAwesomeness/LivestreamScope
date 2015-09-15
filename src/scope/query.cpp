@@ -81,6 +81,8 @@ void Query::run(sc::SearchReplyProxy const &reply) {
             streams = client_.query_streams(query_string);
         }
 
+        std::cout << "query.cpp84" << std::endl;
+
         // Register a category for the forecast
         auto forecast_cat = reply->register_category("forecast",
                                                      "", "", sc::CategoryRenderer(STREAM_TEMPLATE));
@@ -95,7 +97,7 @@ void Query::run(sc::SearchReplyProxy const &reply) {
             res.set_title(stream.title);
 
             // Set the rest of the attributes
-            res["mascot"] = stream.thumbnail;
+            res["art"] = stream.thumbnail;
             res["subtitle"] = stream.name;
 
             // Push the result

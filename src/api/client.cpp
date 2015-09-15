@@ -6,6 +6,7 @@
 #include <core/net/http/response.h>
 #include <QVariantMap>
 #include <iostream>
+#include <typeinfo>
 
 namespace http = core::net::http;
 namespace net = core::net;
@@ -101,23 +102,24 @@ Client::Streams Client::query_streams(const string &query) {
     QVariantMap variant = root.toVariant().toMap();
 
     // Iterate through the stream data
-    for (const QVariant &i : variant["channels"].toList()) {
+    for (const QVariant &i : variant["streams"].toList()) {
 
         QVariantMap item = i.toMap();
+        std::string game = item["game"].toString().toStdString();
         QVariantMap previews = item["preview"].toMap();
-
-        std::cout << "client.cpp108 " << std::endl;
+        item = item["channel"].toMap();
 
         // Add a result to the weather list
         result.stream.emplace_back(
                     Stream { item["status"].toString().toStdString(),
-                             item["game"].toString().toStdString(),
+                             game,
                              item["name"].toString().toStdString(),
-                             item["viewers"].toString().toStdString(),
+//                             item["viewers"].toString().toStdString(),
                              item["url"].toString().toStdString(),
                              item["logo"].toString().toStdString(),
                              previews["small"].toString().toStdString()
                     });
+
     }
 
     return result;

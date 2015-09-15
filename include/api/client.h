@@ -29,7 +29,7 @@ public:
         std::string title;      // Stream Title
         std::string game;       // Channel Game
         std::string name;       // Channel Name
-        std::string viewers;    // Stream Viewers
+//        std::string viewers;    // Stream Viewers
         std::string url;        // Stream URL
         std::string logo;       // Stream Logo URL
         std::string thumbnail;  // Preview URL
